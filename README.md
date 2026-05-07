@@ -90,6 +90,59 @@ OUTPUT_DIR = Path("calibration_compare_output")
 INITIAL_DETECTOR = "classic"
 ```
 
+`CALIB_FLAGS` controls the OpenCV `cv2.calibrateCamera` model and constraints.
+Start with:
+
+```python
+CALIB_FLAGS = 0
+```
+
+Common examples:
+
+```python
+# Use the default 5-coefficient distortion model:
+# k1, k2, p1, p2, k3
+CALIB_FLAGS = 0
+
+# Use the rational distortion model:
+# k1, k2, p1, p2, k3, k4, k5, k6
+CALIB_FLAGS = cv2.CALIB_RATIONAL_MODEL
+
+# Ignore tangential distortion:
+# p1 = p2 = 0
+CALIB_FLAGS = cv2.CALIB_ZERO_TANGENT_DIST
+
+# Fix k3 to zero during optimization:
+CALIB_FLAGS = cv2.CALIB_FIX_K3
+
+# Combine multiple flags:
+CALIB_FLAGS = (
+    cv2.CALIB_RATIONAL_MODEL
+    | cv2.CALIB_ZERO_TANGENT_DIST
+    | cv2.CALIB_FIX_K3
+)
+```
+
+Useful `calibrateCamera` flags:
+
+- `cv2.CALIB_USE_INTRINSIC_GUESS`: start from a provided camera matrix and
+  distortion coefficients.
+- `cv2.CALIB_FIX_PRINCIPAL_POINT`: keep `cx`, `cy` fixed.
+- `cv2.CALIB_FIX_FOCAL_LENGTH`: keep `fx`, `fy` fixed.
+- `cv2.CALIB_FIX_ASPECT_RATIO`: keep the `fx / fy` ratio fixed.
+- `cv2.CALIB_ZERO_TANGENT_DIST`: set `p1`, `p2` to zero and keep them fixed.
+- `cv2.CALIB_FIX_K1` ... `cv2.CALIB_FIX_K6`: keep selected radial distortion
+  coefficients fixed.
+- `cv2.CALIB_RATIONAL_MODEL`: enable `k4`, `k5`, `k6`.
+- `cv2.CALIB_THIN_PRISM_MODEL`: enable `s1`, `s2`, `s3`, `s4`.
+- `cv2.CALIB_FIX_S1_S2_S3_S4`: keep thin prism coefficients fixed.
+- `cv2.CALIB_TILTED_MODEL`: enable tilted sensor coefficients `tauX`, `tauY`.
+- `cv2.CALIB_FIX_TAUX_TAUY`: keep tilted sensor coefficients fixed.
+- `cv2.CALIB_USE_QR`: use QR decomposition instead of SVD. Faster, but
+  potentially less precise.
+- `cv2.CALIB_USE_LU`: use LU decomposition instead of SVD. Faster, but
+  potentially less stable.
+
 Run:
 
 ```powershell
